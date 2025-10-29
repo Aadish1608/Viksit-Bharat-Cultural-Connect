@@ -28,6 +28,10 @@
             background-color: #1e1e1e; 
             border-radius: 5px; 
         }
+        #map { 
+            height: 100%; 
+            width: 100%; 
+        }
         .upload-rules { 
             background: #2c2c2c; 
             padding: 20px; 
@@ -269,13 +273,18 @@
         });
 
         // Initialize Map
-        const map = L.map('map').setView([20.5937, 78.9629], 5); // Center on India
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+        let map;
+        function initMap() {
+            map = L.map('map').setView([20.5937, 78.9629], 5); // Center on India
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+            updateMap();
+        }
 
         // Function to update map with markers
         function updateMap() {
+            if (!map) return; // Ensure map is initialized
             // Clear existing markers (simple way, in real app use marker groups)
             map.eachLayer(function(layer) {
                 if (layer instanceof L.Marker) {
@@ -304,9 +313,11 @@
             });
         }
 
+        // Initialize map on page load
+        document.addEventListener('DOMContentLoaded', initMap);
+
         // Initial render
         renderGallery();
-        updateMap();
     </script>
 </body>
 </html>
