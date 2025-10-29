@@ -1,5 +1,5 @@
 <index.html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +7,78 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { font-family: Arial, sans-serif; }
-        .hero { background: linear-gradient(to right, #ff7e5f, #feb47b); color: white; padding: 100px 0; text-align: center; }
-        .gallery img, .gallery video { width: 100%; height: 200px; object-fit: cover; }
-        .map-container { height: 400px; }
-        .upload-rules { background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
-        .error { color: red; }
-        footer { background: #343a40; color: white; padding: 20px 0; text-align: center; margin-top: 50px; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #121212; 
+            color: #ffffff; 
+        }
+        .hero { 
+            background: linear-gradient(to right, #ff7e5f, #feb47b); 
+            color: white; 
+            padding: 100px 0; 
+            text-align: center; 
+        }
+        .gallery img, .gallery video { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+        }
+        .map-container { 
+            height: 400px; 
+            background-color: #1e1e1e; 
+            border-radius: 5px; 
+        }
+        .upload-rules { 
+            background: #2c2c2c; 
+            padding: 20px; 
+            border-radius: 5px; 
+            margin-bottom: 20px; 
+            color: #ffffff; 
+        }
+        .error { 
+            color: #ff6b6b; 
+        }
+        footer { 
+            background: #343a40; 
+            color: white; 
+            padding: 20px 0; 
+            text-align: center; 
+            margin-top: 50px; 
+        }
+        .card { 
+            background-color: #2c2c2c; 
+            color: #ffffff; 
+        }
+        .form-control, .form-select { 
+            background-color: #1e1e1e; 
+            color: #ffffff; 
+            border: 1px solid #555; 
+        }
+        .form-control:focus, .form-select:focus { 
+            background-color: #1e1e1e; 
+            color: #ffffff; 
+            border-color: #007bff; 
+        }
+        .btn-primary { 
+            background-color: #007bff; 
+            border-color: #007bff; 
+        }
+        .btn-primary:hover { 
+            background-color: #0056b3; 
+            border-color: #0056b3; 
+        }
+        .btn-light { 
+            background-color: #f8f9fa; 
+            color: #212529; 
+        }
+        .btn-outline-light { 
+            color: #f8f9fa; 
+            border-color: #f8f9fa; 
+        }
+        .btn-outline-light:hover { 
+            background-color: #f8f9fa; 
+            color: #212529; 
+        }
     </style>
 </head>
 <body>
@@ -173,6 +238,7 @@
             alert('Upload successful!');
             this.reset();
             renderGallery();
+            updateMap();
         });
 
         // Render Gallery
@@ -208,16 +274,39 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        // Add pins (example locations; in real app, use actual coords)
-        const locations = { 'Maharashtra': [19.0760, 72.8777], 'Kerala': [10.8505, 76.2711] };
-        uploads.forEach(u => {
-            if (u.location && locations[u.location]) {
-                L.marker(locations[u.location]).addTo(map).bindPopup(`${u.title} by ${u.uploader}`);
-            }
-        });
+        // Function to update map with markers
+        function updateMap() {
+            // Clear existing markers (simple way, in real app use marker groups)
+            map.eachLayer(function(layer) {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            // Add pins for uploads with locations
+            const locations = {
+                'Maharashtra': [19.0760, 72.8777],
+                'Kerala': [10.8505, 76.2711],
+                'Delhi': [28.7041, 77.1025],
+                'Rajasthan': [27.0238, 74.2179],
+                'Tamil Nadu': [11.1271, 78.6569],
+                'West Bengal': [22.9868, 87.8550],
+                'Gujarat': [22.2587, 71.1924],
+                'Karnataka': [15.3173, 75.7139],
+                'Punjab': [31.1471, 75.3412],
+                'Uttar Pradesh': [26.8467, 80.9462]
+                // Add more locations as needed
+            };
+            uploads.forEach(u => {
+                if (u.location && locations[u.location]) {
+                    L.marker(locations[u.location]).addTo(map).bindPopup(`<b>${u.title}</b><br>By: ${u.uploader}<br>${u.description}`);
+                }
+            });
+        }
 
         // Initial render
         renderGallery();
+        updateMap();
     </script>
 </body>
 </html>
