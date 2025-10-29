@@ -1,4 +1,4 @@
-<index.html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -27,10 +27,13 @@
             height: 400px; 
             background-color: #1e1e1e; 
             border-radius: 5px; 
+            position: relative; 
         }
         #map { 
             height: 100%; 
             width: 100%; 
+            position: relative; 
+            z-index: 1; 
         }
         .upload-rules { 
             background: #2c2c2c; 
@@ -275,16 +278,24 @@
         // Initialize Map
         let map;
         function initMap() {
+            console.log('Initializing map...');
             map = L.map('map').setView([20.5937, 78.9629], 5); // Center on India
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 20
             }).addTo(map);
+            console.log('Map initialized successfully.');
             updateMap();
         }
 
         // Function to update map with markers
         function updateMap() {
-            if (!map) return; // Ensure map is initialized
+            if (!map) {
+                console.log('Map not initialized yet.');
+                return;
+            }
+            console.log('Updating map with', uploads.length, 'uploads');
             // Clear existing markers (simple way, in real app use marker groups)
             map.eachLayer(function(layer) {
                 if (layer instanceof L.Marker) {
@@ -314,7 +325,7 @@
         }
 
         // Initialize map on page load
-        document.addEventListener('DOMContentLoaded', initMap);
+        window.addEventListener('load', initMap);
 
         // Initial render
         renderGallery();
